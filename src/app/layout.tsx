@@ -7,6 +7,7 @@ import '@/styles/colors.css';
 
 import { siteConfig } from '@/constant/config';
 import TanstackProvider from '@/providers/TanstackProvider';
+import { Toaster } from '@/components/ui/toaster';
 
 // !STARTERCONF Change these default meta
 // !STARTERCONF Look at @/constant/config to change them
@@ -58,7 +59,10 @@ export default function RootLayout({
   return (
     <html>
       <TanstackProvider>
-        <body>{children}</body>
+        <body>
+          {children}
+          <Toaster />
+        </body>
       </TanstackProvider>
     </html>
   );
