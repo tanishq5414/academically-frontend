@@ -6,7 +6,19 @@ const nextConfig = {
 
   reactStrictMode: true,
   swcMinify: true,
+  crossOrigin: 'anonymous',
 
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+        ],
+      },
+    ];
+  },
   // Uncoment to add domain whitelist
   // images: {
   //   remotePatterns: [

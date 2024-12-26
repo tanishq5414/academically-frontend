@@ -1,5 +1,8 @@
+"use client";
+
 import { Metadata } from 'next';
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately

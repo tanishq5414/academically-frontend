@@ -1,9 +1,13 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
+  const pathname = usePathname();
+
   return (
     <div className='fixed top-0 left-0 right-0 flex justify-between items-center px-12 py-6 bg-[#fcfcfc]'>
       <div>
@@ -15,9 +19,25 @@ const Navbar = () => {
         </Link>
       </div>
       <div>
-        <Link href='/sign-up'>
-          <Button className='bg-white text-black hover:bg-purple-500 hover:text-white px-6 py-6'>Sign Up</Button>
-        </Link>
+        {pathname === '/login' ? (
+          <Link href='/signup'>
+            <Button className='bg-white text-black hover:bg-purple-500 hover:text-white px-6 py-6'>
+              Sign Up
+            </Button>
+          </Link>
+        ) : pathname === '/signup' ? (
+          <Link href='/login'>
+            <Button className='bg-white text-black hover:bg-purple-500 hover:text-white px-6 py-6'>
+              Login
+            </Button>
+          </Link>
+        ) : (
+          <Link href='/signup'>
+            <Button className='bg-white text-black hover:bg-purple-500 hover:text-white px-6 py-6'>
+              Sign Up
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );
