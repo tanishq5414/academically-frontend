@@ -3,22 +3,31 @@ import Navbar from '@/app/components/navbar';
 import Sidebar from '@/app/components/sidebar';
 import RightSidebar from '@/app/components/right-sidebar';
 import { useState } from 'react';
-import { MenuIcon, XIcon } from 'lucide-react';
+import { Loader, MenuIcon, XIcon } from 'lucide-react';
+import { useUserInfoQuery } from '@/app/api/queries';
 
 export default function UserWrapper({ children }: { children: React.ReactNode }) {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { data: user, isLoading } = useUserInfoQuery();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-[#fbfbfb]">
-      {!token && <Navbar isLoggedIn={!!token} />}
+      {!user && <Navbar isLoggedIn={!!user} />}
 
       {/* Mobile menu button - only show when logged in */}
-      {token && (
+      {user && (
         <button
           onClick={toggleSidebar}
           className="xl:hidden fixed top-4 left-4 z-50 p-2 rounded-md shadow-md bg-[#fbfbfb]"
@@ -31,8 +40,8 @@ export default function UserWrapper({ children }: { children: React.ReactNode })
         </button>
       )}
 
-      <div className={`flex-1 ${!token ? '' : 'md:grid xl:grid-cols-[320px,1fr,320px]'}`}>
-        {token && (
+      <div className={`flex-1 ${!user ? '' : 'md:grid xl:grid-cols-[320px,1fr,320px]'}`}>
+        {user && (
           <div
             className={`
               fixed xl:relative
@@ -55,14 +64,14 @@ export default function UserWrapper({ children }: { children: React.ReactNode })
           {children}
         </div>
 
-        {token && (
+        {user && (
           <div className="hidden xl:block w-[280px]">
             <RightSidebar />
           </div>
         )}
       </div>
 
-      {token && isSidebarOpen && (
+      {user && isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-20 xl:hidden"
           onClick={() => setIsSidebarOpen(false)}

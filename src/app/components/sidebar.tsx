@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpenIcon, HomeIcon, LogOutIcon, PlusIcon } from "lucide-react";
+import { BookOpenIcon, HomeIcon, Loader, LogOutIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import router from "next/router";
 import { useUserCoursesQuery, useUserInfoQuery } from "@/app/api/queries";
 import { UserRole } from "@/types/interfaces";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const { data: user } = useUserInfoQuery();
+  const { data: user, isLoading } = useUserInfoQuery();
 
   const navigationItems = [
     {
@@ -36,12 +37,21 @@ const Sidebar = () => {
   const filteredNavigationItems = navigationItems.filter(item =>
     user?.role && item.role.includes(user.role)
   );
+  const queryClient = useQueryClient();
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    queryClient.invalidateQueries({ queryKey: ['user'] });
+    queryClient.invalidateQueries({ queryKey: ['userCourses'] });
+    queryClient.invalidateQueries({ queryKey: ['courses'] });
     window.location.href = '/';
   };
 
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <div className="flex flex-col min-h-screen h-screen pt-10">

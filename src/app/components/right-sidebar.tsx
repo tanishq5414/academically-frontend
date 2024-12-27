@@ -1,9 +1,10 @@
 import { useUserInfoQuery } from "@/app/api/queries";
+import { Loader } from "@/components/ui/loader";
 import Image from "next/image";
 import { useState } from "react";
 
 const RightSidebar = () => {
-  const user = useUserInfoQuery();
+  const { data: user, isLoading } = useUserInfoQuery();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const daysInMonth = new Date(
@@ -43,6 +44,10 @@ const RightSidebar = () => {
     }));
   };
 
+  if (isLoading) {
+    return <Loader className="h-8 w-8 animate-spin" />
+  }
+
   return (
     <div className="h-full w-full overflow-y-auto px-4 pt-8">
       <div className="flex flex-col items-start">
@@ -51,16 +56,16 @@ const RightSidebar = () => {
       <div className="flex flex-col items-center align-top items-start px-4 pt-8">
         <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
           <Image
-            src={user?.data?.avatar || "/images/default-avatar.png"}
+            src={user?.avatar || "/images/default-avatar.png"}
             alt="Profile"
             width={96}
             height={96}
             className="w-full h-full object-cover"
           />
         </div>
-        <h2 className="mt-4 text-lg font-semibold">{user?.data?.name}</h2>
-        <p className="text-sm text-gray-500">{user?.data?.email}</p>
-        <p className="text-sm text-gray-500">{user?.data?.role}</p>
+        <h2 className="mt-4 text-lg font-semibold">{user?.name}</h2>
+        <p className="text-sm text-gray-500">{user?.email}</p>
+        <p className="text-sm text-gray-500">{user?.role}</p>
       </div>
 
       <div className="mt-8 w-full">

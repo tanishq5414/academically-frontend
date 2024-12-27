@@ -53,7 +53,7 @@ export function UserSignInForm() {
         });
         
         setTimeout(() => {
-          router.push("/dashboard");
+          window.location.href = "/";
           router.refresh();
         }, 100);
       } catch (error) {

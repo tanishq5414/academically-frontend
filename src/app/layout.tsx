@@ -60,12 +60,12 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <TanstackProvider>
-        <body>
+      <body>
+        <TanstackProvider>
           <UserWrapper>{children}</UserWrapper>
           <Toaster />
-        </body>
-      </TanstackProvider>
+        </TanstackProvider>
+      </body>
     </html>
   );
 }
