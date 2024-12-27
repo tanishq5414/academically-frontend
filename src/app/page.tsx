@@ -6,6 +6,7 @@ import { Loader } from '@/components/ui/loader';
 import DashboardPage from '@/app/dashboard/page';
 import LoginPage from '@/app/(auth)/login/page';
 import { redirect } from 'next/navigation';
+import { UserRole } from '@/types/interfaces';
 
 export default function HomePage() {
   const { data: userInfo, isLoading } = useQuery({
@@ -25,7 +26,11 @@ export default function HomePage() {
   }
 
   // If user is logged in, show dashboard content
-  if (userInfo) {
+  if (userInfo && userInfo.role === UserRole.ADMIN) {
+    redirect('/courses');
+  }
+
+  if (userInfo && userInfo.role === UserRole.USER) {
     redirect('/dashboard');
   }
 
