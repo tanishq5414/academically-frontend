@@ -77,5 +77,9 @@ module.exports = {
   //   // ],
   //   // //#endregion  //*======== Import Sort ===========
   // },
+  globals: {
+    React: true,
+    JSX: true,
+  },
   },
 };
