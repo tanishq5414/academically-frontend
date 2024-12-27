@@ -1,7 +1,6 @@
-
 import { Metadata } from 'next';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { headers } from 'next/headers';
 
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
@@ -10,6 +9,7 @@ import '@/styles/colors.css';
 import { siteConfig } from '@/constant/config';
 import TanstackProvider from '@/providers/TanstackProvider';
 import { Toaster } from '@/components/ui/toaster';
+import UserWrapper from '@/app/components/user-wrapper';
 
 // !STARTERCONF Change these default meta
 // !STARTERCONF Look at @/constant/config to change them
@@ -62,7 +62,7 @@ export default function RootLayout({
     <html>
       <TanstackProvider>
         <body>
-          {children}
+          <UserWrapper>{children}</UserWrapper>
           <Toaster />
         </body>
       </TanstackProvider>

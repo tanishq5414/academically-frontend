@@ -58,7 +58,7 @@ export function UserSignUpForm() {
         description: "Welcome to Acadamically Global!",
         variant: "default",
       });
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     },
     onError: (error: any) => {
       toast({
