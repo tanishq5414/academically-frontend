@@ -137,7 +137,7 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
                   `}
                 >
                   <div className="flex flex-col items-start justify-between h-full w-full">
-                    <div className={`flex flex-col items-center rounded-lg justify- h-[8rem] md:h-[10rem] w-full mb-2 ${index % 3 === 0 ? 'bg-[#569be2]' : index % 3 === 1 ? 'bg-[#8970d5]' : 'bg-[#fcaa5d]'}`}>
+                    <div className={`flex flex-col items-center rounded-lg px-10 justify-center h-[8rem] md:h-[10rem] mb-2 ${index % 3 === 0 ? 'bg-[#569be2]' : index % 3 === 1 ? 'bg-[#8970d5]' : 'bg-[#fcaa5d]'}`}>
                       <div className="flex flex-row items-center justify-center h-full rounded-lg">
                         <Image
                           src={'/images/logo.png'}
@@ -147,12 +147,12 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
                           className={
                             !course.image
                               ? "center"
-                              : "w-full h-full object-contain"
+                              : "w-full h-full object-contain "
                           }
                         />
-                        <div className="flex flex-col items-start justify-center h-full w-full rounded-lg px-2">
-                          <h3 className="text-sm md:text-sm font-medium text-start text-white">{course.title}</h3>
-                          <span className="text-xs md:text-xs text-white-500">by Acadamically</span>
+                        <div className="flex flex-col items-start justify-center h-full rounded-lg mx-2">
+                          <h3 className="text-sm md:text-sm font-medium text-start text-white line-clamp-3">{course.title.split(' ')[0]}</h3>
+                          <span className="text-xs md:text-xs text-white-500">by Academically</span>
                         </div>
                       </div>
                     </div>

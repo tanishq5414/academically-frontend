@@ -4,8 +4,9 @@ import { getUserInfo, getUserCourses } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
 import CoursesGrid from "@/app/components/courses-grid";
 import Image from "next/image";
-import { ICourse } from "@/types/interfaces";
+import { ICourse, UserRole } from "@/types/interfaces";
 import { useUserInfoQuery, useUserCoursesQuery } from "@/app/api/queries";
+import { redirect } from "next/navigation";
 
 const DashboardPage = () => {
   const { data: user, isLoading: isUserLoading } = useUserInfoQuery();
@@ -21,6 +22,11 @@ const DashboardPage = () => {
         <Loader />
       </div>
     );
+  }
+
+  if(user?.role == UserRole.ADMIN) {
+    window.location.href = "/courses";
+    redirect('/courses')
   }
 
   const userCourses = userCoursesResponse;

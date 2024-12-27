@@ -3,8 +3,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from '@/lib/api';
 import { Loader } from '@/components/ui/loader';
-import DashboardPage from '@/app/dashboard/page';
-import LoginPage from '@/app/(auth)/login/page';
 import { redirect } from 'next/navigation';
 import { UserRole } from '@/types/interfaces';
 

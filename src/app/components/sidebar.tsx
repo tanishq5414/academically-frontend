@@ -43,9 +43,6 @@ const Sidebar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('userId');
-    queryClient.invalidateQueries({ queryKey: ['user'] });
-    queryClient.invalidateQueries({ queryKey: ['userCourses'] });
-    queryClient.invalidateQueries({ queryKey: ['courses'] });
     window.location.href = '/';
   };
 
@@ -60,7 +57,7 @@ const Sidebar = () => {
           <Link href="/dashboard">
             <Image src="/images/logo.png" alt="logo" width={50} height={50} />
           </Link>
-          <h1 className="text-lg font-normal italic">Acadamically</h1>
+          <h1 className="text-lg font-normal italic">Academically</h1>
         </div>
 
         <div className="flex flex-col space-y-2 w-full">

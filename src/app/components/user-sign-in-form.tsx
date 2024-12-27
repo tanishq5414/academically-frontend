@@ -45,13 +45,13 @@ export function UserSignInForm() {
         localStorage.setItem("token", responseData.data.token.token);
         localStorage.setItem("user", JSON.stringify(responseData.data.user));
         localStorage.setItem("userId", responseData.data.token.userId);
-        
+
         toast({
           title: "Success",
-          description: "Welcome to Acadamically Global!",
+          description: "Welcome to Academically Global!",
           variant: "default",
         });
-        
+
         setTimeout(() => {
           window.location.href = "/";
           router.refresh();

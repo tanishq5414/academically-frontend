@@ -12,7 +12,7 @@ const Navbar = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         <Link href='/'>
           <div className='flex items-center gap-2'>
             <Image src='/images/logo.png' alt='logo' width={50} height={50} />
-            <h1 className='text-xl font-normal italic'>Acadamically Global</h1>
+            <h1 className='text-xl font-normal italic'>Academically Global</h1>
           </div>
         </Link>
       </div>

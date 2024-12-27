@@ -1,7 +1,6 @@
 export const siteConfig = {
-  title: 'Acadamically Global',
+  title: 'Academically Global',
   description:
     'A platform for global education',
-  /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
-  url: 'https://acadamically.com',
+  url: "https://academically-frontend.vercel.app"
 };

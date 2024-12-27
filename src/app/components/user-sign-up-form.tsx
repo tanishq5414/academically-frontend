@@ -55,7 +55,7 @@ export function UserSignUpForm() {
       localStorage.setItem("userId", responseData.data.token.userId);
       toast({
         title: "Success",
-        description: "Welcome to Acadamically Global!",
+        description: "Welcome to Academically Global!",
         variant: "default",
       });
       window.location.href = "/dashboard";
