@@ -1,10 +1,14 @@
 import Image from "next/image";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ICourse, UserRole } from "@/types/interfaces";
+import { ICourse, UserRole, CourseCategory } from "@/types/interfaces";
 import { useState } from "react";
-import { useCoursesQuery, useEnrollCourseMutation, useUserCoursesQuery, useUserInfoQuery } from "@/app/api/queries";
+import { useCoursesQuery, useEnrollCourseMutation, useUserCoursesQuery, useUserInfoQuery, useDeleteCourseMutation, useUpdateCourseMutation } from "@/app/api/queries";
 import { Loader } from "@/components/ui/loader";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash } from "lucide-react";
+import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CoursesGridProps {
   showAll?: boolean;
@@ -13,11 +17,21 @@ interface CoursesGridProps {
 
 const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<ICourse | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    description: "",
+    category: "" as CourseCategory,
+    instructorName: "",
+  });
 
   const { data: coursesResponse, isLoading } = useCoursesQuery();
   const { mutate: enrollMutation } = useEnrollCourseMutation();
   const { data: userCourses } = useUserCoursesQuery();
   const { data: user } = useUserInfoQuery();
+  const { mutate: updateCourse } = useUpdateCourseMutation();
+  const { mutate: deleteCourse } = useDeleteCourseMutation();
 
   const onEnroll = (courseId: string) => {
     enrollMutation(courseId);
@@ -63,7 +77,7 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
   const renderEnrollButton = (course: ICourse) => {
     const isEnrolled = userCourses &&
       Object.values(userCourses).some(userCourse => userCourse?.id === course?.id);
-    if(user?.role === UserRole.ADMIN) {
+    if (user?.role === UserRole.ADMIN) {
       return (
         <></>
       );
@@ -85,6 +99,34 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
         Enroll Now
       </p>
     );
+  };
+
+  const handleEditClick = (course: ICourse) => {
+    setSelectedCourse(course);
+    setEditFormData({
+      title: course.title,
+      description: course.description || "",
+      category: course.category || "",
+      instructorName: course.instructorName || "",
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = (courseId: string) => {
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      deleteCourse(courseId);
+    }
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedCourse) {
+      updateCourse({
+        id: selectedCourse.id,
+        ...editFormData,
+      });
+      setIsEditDialogOpen(false);
+    }
   };
 
   if (isLoading) {
@@ -121,7 +163,7 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
               {searchTerm ? 'Search Results' : (showAll ? 'All Courses' : 'New Courses')}
             </h1>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pb-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-4 gap-4 md:gap-6 pb-6 mb-6">
             {displayedCourses.map((course: ICourse, index: number) => (
               <div key={course.id} className="w-full">
                 <div
@@ -136,7 +178,7 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
                     }
                   `}
                 >
-                  <div className="flex flex-col items-start justify-between h-full w-full">
+                  <div className="flex flex-col justify-between h-full w-full">
                     <div className={`flex flex-col items-center rounded-lg px-10 justify-center h-[8rem] md:h-[10rem] mb-2 ${index % 3 === 0 ? 'bg-[#569be2]' : index % 3 === 1 ? 'bg-[#8970d5]' : 'bg-[#fcaa5d]'}`}>
                       <div className="flex flex-row items-center justify-center h-full rounded-lg">
                         <Image
@@ -163,7 +205,29 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
                       <span className="text-xs md:text-sm text-gray-500">
                         {course.category} • {course.instructorName}
                       </span>
-                      {renderEnrollButton(course)}
+                      <div className="flex justify-between items-center">
+                        {renderEnrollButton(course)}
+                        {user?.role === UserRole.ADMIN && (
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEditClick(course)}
+                              className="h-8 w-8"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteClick(course.id)}
+                              className="h-8 w-8"
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -178,6 +242,60 @@ const CoursesGrid = ({ showAll = false, title }: CoursesGridProps) => {
           No courses found matching your search.
         </div>
       )}
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Course</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Title</label>
+              <Input
+                value={editFormData.title}
+                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Description</label>
+              <Input
+                value={editFormData.description}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Category</label>
+              <Select
+                value={editFormData.category}
+                onValueChange={(value) => setEditFormData({ ...editFormData, category: value as CourseCategory })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="BEGINNER">Beginner</SelectItem>
+                  <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                  <SelectItem value="ADVANCED">Advanced</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Instructor Name</label>
+              <Input
+                value={editFormData.instructorName}
+                onChange={(e) => setEditFormData({ ...editFormData, instructorName: e.target.value })}
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">Save Changes</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

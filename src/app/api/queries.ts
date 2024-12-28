@@ -1,5 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCourses, getUserCourses, getUserInfo, enrollInCourse, createCourse } from "@/lib/api";
+import {
+  getCourses,
+  getUserCourses,
+  getUserInfo,
+  enrollInCourse,
+  createCourse,
+  updateCourse,
+  deleteCourse
+} from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
 import { CourseFormData, ICourse } from "@/types/interfaces";
 import { useRouter } from "next/navigation";
@@ -56,5 +64,47 @@ export const useEnrollCourseMutation = () => {
 
 
 export const useCreateCourseMutation = () => {
-  
+
+};
+
+export const useUpdateCourseMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      toast({
+        title: 'Course updated successfully',
+        variant: 'default',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Failed to update course',
+        variant: 'destructive',
+      });
+    },
+  });
+};
+
+export const useDeleteCourseMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      toast({
+        title: 'Course deleted successfully',
+        variant: 'default',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Failed to delete course',
+        variant: 'destructive',
+      });
+    },
+  });
 };

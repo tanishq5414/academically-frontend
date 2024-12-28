@@ -1,4 +1,4 @@
-import { CourseFormData, IUser } from "@/types/interfaces";
+import { CourseFormData, ICourse, IUser } from "@/types/interfaces";
 import axios from "axios";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -66,6 +66,18 @@ export const enrollInCourse = async (courseId: string) => {
 
 export const createCourse = async (formData: CourseFormData) => {
   const response = await axios.post(`${baseUrl}/course/createCourse`, formData);
+  return response.data.data;
+};
+
+export const updateCourse = async (courseData: Partial<ICourse>) => {
+  const response = await axios.post(`${baseUrl}/course/updateCourse`, courseData);
+  return response.data.data;
+};
+
+export const deleteCourse = async (courseId: string) => {
+  const response = await axios.post(`${baseUrl}/course/deleteCourse`, {
+    id: courseId,
+  });
   return response.data.data;
 };
 
